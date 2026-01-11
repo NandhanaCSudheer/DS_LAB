@@ -15,10 +15,10 @@ int main()
 {
     int n;
      int v1, v2;
-     int visited[n];
-    int graph[n][n];
     printf("Enter the no. of nodes: ");
     scanf("%d", &n);
+     int visited[n];
+    int graph[n][n];
     for (int i = 0; i < n; i++)
     {
         visited[i] = 0;
