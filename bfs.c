@@ -1,90 +1,74 @@
 #include <stdio.h>
-#define MAX 100
-void displayGraph();
-void createGraph();
-void bfs();
-int graph[MAX][MAX] = {0}, vertices;
-void main()
-{
-    printf("How many vertices are there? :");
-    scanf("%d", &vertices);
-    if (vertices <= 0 || vertices > MAX)
-    {
-        printf("\nInvalid no. of vertices\n");
-        return;
-    }
-    createGraph();
-    displayGraph();
-    bfs();
+
+#define MAX 10
+
+int adj[MAX][MAX];
+int visited[MAX];
+int queue[MAX];
+int front = 0, rear = -1;
+int n;
+
+/* Queue operations */
+void enqueue(int v) {
+    queue[++rear] = v;
 }
-void bfs()
-{
-    int queue[MAX], visited[MAX], front = 0, rear = 0, pop, start;
-    for (int i = 0; i < vertices; i++)
-    {
-        visited[i] = 0;
-    }
-    printf("\nEnter the vertex to start BFS from: ");
-    scanf("%d", &start);
-    if (start < 0 || start >= vertices)
-    {
-        printf("\nInvalid start vertex!\n");
-        return;
-    }
-    queue[rear] = start;
+
+int dequeue() {
+    return queue[front++];
+}
+
+int isEmpty() {
+    return front > rear;
+}
+
+/* BFS function */
+void BFS(int start) {
+    enqueue(start);
     visited[start] = 1;
+
     printf("BFS Traversal: ");
-    while (front <= rear)
-    {
-        pop = queue[front];
-        printf("%d", pop);
-        front++;
-        for (int i = 0; i < vertices; i++)
-        {
-            if (graph[pop][i] == 1 && !visited[i])
-            {
-                rear++;
-                queue[rear] = i;
+
+    while (!isEmpty()) {
+        int v = dequeue();
+        printf("%d ", v);
+
+        for (int i = 0; i < n; i++) {
+            if (adj[v][i] == 1 && !visited[i]) {
+                enqueue(i);
                 visited[i] = 1;
             }
         }
     }
-    printf("\n");
 }
-void createGraph()
-{
-    int a, b;
-    printf("Enter edges(enter -1 to stop):\n");
-    while (1)
-    {
-        printf("Enter the first endpoint of the edge: ");
-        scanf("%d", &a);
-        if (a == -1)
-        {
-            break;
-        }
-        printf("Enter the second endpoint of the edge: ");
-        scanf("%d", &b);
-        if (a >= vertices || b >= vertices || a < 0 || b < 0)
-        {
-            printf("Invalid edge. Please enter vertices between 0 and %d.\n", vertices - 1);
-        }
-        else
-        {
-            graph[a][b] = 1;
-            graph[b][a] = 1;
+
+int main() {
+    int edges, u, v, start;
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter number of edges: ");
+    scanf("%d", &edges);
+
+    /* Initialize adjacency matrix and visited */
+    for (int i = 0; i < n; i++) {
+        visited[i] = 0;
+        for (int j = 0; j < n; j++) {
+            adj[i][j] = 0;
         }
     }
-}
-void displayGraph()
-{
-    printf("\nAdjacency Matrix:\n");
-    for (int i = 0; i < vertices; i++)
-    {
-        for (int j = 0; j < vertices; j++)
-        {
-            printf("%d", graph[i][j]);
-        }
-        printf("\n");
+
+    printf("Enter edges (u v):\n");
+    for (int i = 0; i < edges; i++) {
+        scanf("%d %d", &u, &v);
+        adj[u][v] = 1;
+        adj[v][u] = 1;   // Undirected graph
     }
+
+    printf("Enter starting vertex: ");
+    scanf("%d", &start);
+
+    BFS(start);
+
+    return 0;
 }
